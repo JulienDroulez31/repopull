@@ -24,14 +24,6 @@ jobs:
           # Copier les fichiers README.md
           cp repo1/README.md readmes/README-repo1.md
           cp repo2/README.md readmes/README-repo2.md
-
-      - name: Verify Git repository
-        run: |
-          echo "Current directory: $(pwd)"
-          echo "Contents of the directory:"
-          ls -la
-          echo "Check for .git directory:"
-          if [ -d ".git" ]; then echo ".git directory exists"; else echo ".git directory does not exist"; fi
           
           - name: Commit and push README.md
           run: |
