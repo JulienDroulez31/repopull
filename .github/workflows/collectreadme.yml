@@ -1,0 +1,35 @@
+name : Collect README.md
+
+on:
+  schedule:
+    - cron: "0 0 * * 0" # Execution 1 fois par semaine
+  workflow_dispatch:    # Execution manuelle
+
+jobs:
+runs-on: ubuntu-latest
+
+steps:
+-name: Clone repositories
+run: mkdir readmes
+
+# Cloner les repositories existants
+ git clone https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/JulienDroulez31/repo1.git repo1
+ git clone https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/JulienDroulez31/repo2.git repo2
+
+# Copier les fichiers README.md
+cp repo1/README.md readmes/README-repo1.md
+cp repo2/README.md readmes/README-repo2.md
+
+-name: Commit and push README.md
+run: 
+
+# Commit et push les fichiers README.md
+git config --global user.name 'github-actions[bot]'
+git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+git add readmes/*
+git commit -m "Update README.md files from other repositories"
+git push
+
+env:
+GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
