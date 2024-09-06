@@ -1,4 +1,4 @@
-name: Collect Auto README.md
+name: Collect README.md
 
 on:
   schedule:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3 # Assure que le dépôt actuel est vérifié
+        uses: actions/checkout@v3 # Vérifie le dépôt actuel
 
       - name: Set up Git
         run: |
@@ -21,22 +21,21 @@ jobs:
       - name: Get list of repositories
         id: repos
         run: |
-          repos=$(curl -s -H "Authorization: token ${{ secrets.ACCESS_TOKEN }}" \
-                    https://api.github.com/user/repos?per_page=100 \
-                    | jq -r '.[].clone_url')
-          echo "REPOS=$repos" >> $GITHUB_ENV
+          curl -s -H "Authorization: token ${{ secrets.ACCESS_TOKEN }}" \
+               https://api.github.com/user/repos?per_page=100 \
+               | jq -r '.[].clone_url' > repos.txt
 
       - name: Clone repositories and collect README.md
         run: |
           mkdir -p readmes
-          for repo in ${{ env.REPOS }}
-          do
-            repo_name=$(basename -s .git $repo)
-            git clone $repo $repo_name
-            if [ -f $repo_name/README.md ]; then
-              cp $repo_name/README.md readmes/README-$repo_name.md
+          while IFS= read -r repo; do
+            repo_name=$(basename -s .git "$repo")
+            echo "Cloning $repo_name"
+            git clone "$repo" "$repo_name"
+            if [ -f "$repo_name/README.md" ]; then
+              cp "$repo_name/README.md" "readmes/README-$repo_name.md"
             fi
-          done
+          done < repos.txt
 
       - name: Commit and push README.md
         run: |
