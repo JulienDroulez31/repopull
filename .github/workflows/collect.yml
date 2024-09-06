@@ -33,4 +33,4 @@ jobs:
           git commit -m "Update README.md files from other repositories" || echo "No changes to commit"
           git push
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }} # Utilisation du token GitHub Actions intégré
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
