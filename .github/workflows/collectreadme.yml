@@ -20,18 +20,17 @@ jobs:
           # Cloner les repositories existants
           git clone https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/JulienDroulez31/repo1.git repo1
           git clone https://x-access-token:${{ secrets.ACCESS_TOKEN }}@github.com/JulienDroulez31/repo2.git repo2
-
+          
           # Copier les fichiers README.md
           cp repo1/README.md readmes/README-repo1.md
           cp repo2/README.md readmes/README-repo2.md
-          
-          - name: Commit and push README.md
-          run: |
+
+      - name: Commit and push README.md
+        run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add readmes/*
           git commit -m "Update README.md files from other repositories" || echo "No changes to commit"
           git push
-          
-          env:
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Utilisation du token GitHub Actions intégré
