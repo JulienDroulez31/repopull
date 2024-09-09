@@ -43,8 +43,8 @@ jobs:
      #     git add readmes/*
      #     git commit -m "Update README.md files from other repositories" || echo "No changes to commit"
      #     git push
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+     #   env:
+     #     GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
@@ -52,3 +52,6 @@ jobs:
           name: README
           path: README.md
           retention-days: 90
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
