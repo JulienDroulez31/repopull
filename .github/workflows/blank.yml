@@ -1,0 +1,46 @@
+name: Artifact.md
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Exécution une fois par semaine
+  workflow_dispatch:    # Exécution manuelle
+
+jobs:
+  collect-readmes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3 # Assure que le dépôt actuel est vérifié
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Get list of repositories
+        id: repos
+        run: |
+          repos=$(curl -s -H "Authorization: token ${{ secrets.ACCESS_TOKEN }}" \
+                    https://api.github.com/user/repos?per_page=100 \
+                    | jq -r '.[].clone_url')
+          echo "REPOS=$repos" >> $GITHUB_ENV
+
+      - name: Clone repositories and collect README.md
+        run: |
+          mkdir -p readmes
+          for repo in ${{ env.REPOS }}
+          do
+            repo_name=$(basename -s .git $repo)
+            git clone $repo $repo_name
+            if [ -f $repo_name/README.md ]; then
+              cp $repo_name/README.md readmes/README-$repo_name.md
+            fi
+          done
+          
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: README
+          path: README.md
+          retention-days: 90
