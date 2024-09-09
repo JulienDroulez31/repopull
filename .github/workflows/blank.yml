@@ -1,4 +1,4 @@
-name: Artifact.md
+name: Collect README.md
 
 on:
   schedule:
@@ -18,13 +18,13 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Get list of repositories
-        id: repos
-        run: |
-          repos=$(curl -s -H "Authorization: token ${{ secrets.ACCESS_TOKEN }}" \
-                    https://api.github.com/user/repos?per_page=100 \
-                    | jq -r '.[].clone_url')
-          echo "REPOS=$repos" >> $GITHUB_ENV
+     # - name: Get list of repositories
+     #   id: repos
+     #   run: |
+     #     repos=$(curl -s -H "Authorization: token ${{ secrets.ACCESS_TOKEN }}" \
+     #               https://api.github.com/user/repos?per_page=100 \
+     #               | jq -r '.[].clone_url')
+     #     echo "REPOS=$repos" >> $GITHUB_ENV
 
       - name: Clone repositories and collect README.md
         run: |
@@ -37,7 +37,15 @@ jobs:
               cp $repo_name/README.md readmes/README-$repo_name.md
             fi
           done
-          
+
+     # - name: Commit and push README.md
+     #   run: |
+     #     git add readmes/*
+     #     git commit -m "Update README.md files from other repositories" || echo "No changes to commit"
+     #     git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
