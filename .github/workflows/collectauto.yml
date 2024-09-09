@@ -1,4 +1,4 @@
-name: Collect README.md
+name: Collect README v1.md
 
 on:
   schedule:
