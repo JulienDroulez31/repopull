@@ -36,6 +36,11 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
+      # Convertir les fichiers en CSV
+      - name: Convertir .md en .csv
+        run: |
+         pip install beautifulsoup4 flask
+         mdtable2csv README.md
 
       # Upload artifacts
       - name: 'Upload Artifacts'
