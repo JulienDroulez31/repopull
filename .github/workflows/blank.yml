@@ -41,6 +41,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install pandoc
+          pandoc README-*.md -o output.html
           pandoc -f markdown -t csv -o output.csv README-*.md
 
       # Upload artifacts
