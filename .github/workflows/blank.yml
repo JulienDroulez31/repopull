@@ -30,7 +30,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
 
-      - name: Create repo and collect readme
+      # Requete API qui recupere les README
+      - name: API Call Repo
         run: |
           mkdir -p readmes
           for repo in ${{ env.REPOS }}
@@ -40,17 +41,16 @@ jobs:
               cp $repo_name/README.md readmes/README-$repo_name.md
             fi
           done
-
-
-      # Requete API qui recupere les README
-      - name: API Call Repo
-        run: |
+          
+          repos=("repo1" "repo2")
+          for repo_name in "${repos[@]}"
+          do
+          echo "Fetching README.md from $repo_name"
           curl -L \
-          -X POST \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          https://api.github.com/repos/JulienDroulez31/repo1/README.md \
+          -H "Authorization: Bearer <YOUR-TOKEN>" \
+          https://api.github.com/repos/JulienDroulez31/$repo_name/README.md
+          done
 
 
      # Artifact collect
@@ -60,8 +60,3 @@ jobs:
           name: README
           path: readmes/*
           retention-days: 90
-
-
-    # Environnement
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
