@@ -39,8 +39,9 @@ jobs:
       # Convertir les fichiers en CSV
       - name: Convertir .md en .csv
         run: |
-         pip install mdtable2csv
-         mdtable2csv convert README.md
+          sudo apt-get update
+          sudo apt-get install pandoc
+          pandoc -f markdown -t csv -o output.csv README-*.md
 
       # Upload artifacts
       - name: 'Upload Artifacts'
