@@ -1,4 +1,4 @@
-name: Collect readmefiles
+name: Collect README.md
 
 on:
   schedule:
@@ -26,7 +26,8 @@ jobs:
       # Liste tous les depots de l'organisation
       - name: List repositories
         run:  repos=$(gh repo list JulienDroulez31 -L 2000 --json name -q '.[].name')
-
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
       # Requete API qui recupere les README
       - name: API Call Repo
