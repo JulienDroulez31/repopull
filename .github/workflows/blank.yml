@@ -3,18 +3,16 @@ name: Collect README.md
 on:
   schedule:
     - cron: '0 0 * * 0'  # Exécution une fois par semaine
-  workflow_dispatch:     # Exécution manuelle
+  workflow_dispatch:
 
 jobs:
   collect-readmes:
     runs-on: ubuntu-latest
 
-
-    # Assure que le dépôt actuel est vérifié
     steps:
+      # Assure que le dépôt actuel est vérifié
       - name: Checkout repository
         uses: actions/checkout@v4
-
 
       # Configure l'acces a GitHub Actions
       - name: Set up Git
@@ -22,38 +20,29 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-
-      # Liste tous les depots de l'organisation
+      # Liste tous les dépôts de l'organisation
       - name: List repositories
-        run:  repos=$(gh repo list $repos -L 2000 --json name -q '.[].name')
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 200 --json name --jq '.[].name')
+          echo "$repos"
+          echo "$repos" > repo_list.txt
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-
-      # Requete API qui recupere les README
-      - name: API Call Repo
+      # Clone les dépôts et collecte les README.md
+      - name: Clone repositories and collect README.md
         run: |
           mkdir -p readmes
-          for repo in ${{ env.REPOS }}
-          do
+          while read repo; do
             repo_name=$(basename -s .git $repo)
+            echo "Cloning $repo_name"
+            git clone https://github.com/JulienDroulez31/$repo_name.git
             if [ -f $repo_name/README.md ]; then
               cp $repo_name/README.md readmes/README-$repo_name.md
             fi
-          done
-          
-          repos=("repo1" "repo2")
-          for repo_name in "${repos[@]}"
-          do
-          echo "Fetching README.md from $repo_name"
-          curl -L \
-          -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
-          https://api.github.com/repos/JulienDroulez31/$repo_name/README.md
-          done
+          done < repo_list.txt
 
-
-     # Artifact collect
+      # Artifact collect
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
         with:
@@ -61,7 +50,5 @@ jobs:
           path: readmes/*
           retention-days: 90
 
-
-    # Environnement
-        env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+    env:
+      GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
