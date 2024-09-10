@@ -33,8 +33,8 @@ jobs:
               https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
-        env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
       # Upload artifacts
       - name: 'Upload Artifacts'
