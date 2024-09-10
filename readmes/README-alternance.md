@@ -1,3 +1,0 @@
-| Produit | Owner |
-| ------- | ----- |
-| MyCard  | Stargate |
