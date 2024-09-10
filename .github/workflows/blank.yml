@@ -39,8 +39,8 @@ jobs:
       # Convertir les fichiers en CSV
       - name: Convertir .md en .csv
         run: |
-         pip install beautifulsoup4 flask
-         mdtable2csv README.md
+         pip install mdtable2csv
+         mdtable2csv convert README.md
 
       # Upload artifacts
       - name: 'Upload Artifacts'
