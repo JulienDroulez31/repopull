@@ -14,11 +14,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+
       # Configure l'acces a GitHub Actions
       - name: Set up Git
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
 
       # Liste tous les dépôts de l'organisation
       - name: List repositories
@@ -28,8 +30,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-      # Crée le dossier readmes et faire une requete API
-      - name: Requete API and collect README.md
+
+      # Crée le dossier readmes et faire des API Calls
+      - name: API Call and collect README.md
         run: |
           mkdir -p readmes
           while read repo_name; do
@@ -42,6 +45,7 @@ jobs:
              | jq -r '.content' | base64 --decode > readmes/README-$repo_name.md
           done < repos.txt 
 
+
       # Artifact collect
       - name: 'Upload Artifact'
         uses: actions/upload-artifact@v4
@@ -49,6 +53,3 @@ jobs:
           name: README
           path: readmes/*
           retention-days: 90
-
-    env:
-      GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
