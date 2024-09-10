@@ -3,7 +3,7 @@ name: Collect README.md
 on:
   schedule:
     - cron: '0 0 * * 0'  # Exécution une fois par semaine
-  workflow_dispatch:
+  workflow_dispatch:     # Exécution manuelle
 
 jobs:
   collect-readmes:
@@ -22,25 +22,23 @@ jobs:
 
       # Liste tous les dépôts de l'organisation
       - name: List repositories
+        id: list_repos
         run: |
-          repos=$(gh repo list JulienDroulez31 -L 200 --json name --jq '.[].name')
-          echo "$repos"
-          echo "$repos" > repo_list.txt
+          gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name' > repos.txt
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
-      # Clone les dépôts et collecte les README.md
+      # Crée le dossier readmes et clone les dépôts
       - name: Clone repositories and collect README.md
         run: |
           mkdir -p readmes
-          while read repo; do
-            repo_name=$(basename -s .git $repo)
+          while read repo_name; do
             echo "Cloning $repo_name"
             git clone https://github.com/JulienDroulez31/$repo_name.git
             if [ -f $repo_name/README.md ]; then
               cp $repo_name/README.md readmes/README-$repo_name.md
             fi
-          done < repo_list.txt
+          done < repos.txt
 
       # Artifact collect
       - name: 'Upload Artifact'
