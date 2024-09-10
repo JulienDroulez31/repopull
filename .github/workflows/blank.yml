@@ -48,7 +48,7 @@ jobs:
           echo "Fetching README.md from $repo_name"
           curl -L \
           -H "Accept: application/vnd.github+json" \
-          -H "Authorization: Bearer <YOUR-TOKEN>" \
+          -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
           https://api.github.com/repos/JulienDroulez31/$repo_name/README.md
           done
 
@@ -60,3 +60,8 @@ jobs:
           name: README
           path: readmes/*
           retention-days: 90
+
+
+    # Environnement
+        env:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
