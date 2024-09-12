@@ -45,7 +45,7 @@ jobs:
 
           for repo_file in $repos; do
             echo "Convert $repo_file to CSV"
-            md_to_json $repo_file.md -o $repo_file.json
+            md_to_json $repo_file -o $repo_file.json
           done
 
       # Regrouper les fichiers CSV
