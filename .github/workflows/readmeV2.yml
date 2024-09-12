@@ -40,11 +40,11 @@ jobs:
         run: |
           repos=$(ls | grep README)
 
-          npm install -g md2csv
+          pip install markdown-to-json
 
           for repo_file in $repos; do
             echo "Convert $repo_file to CSV"
-            md2csv $repo_file > $repo_file.md.csv
+            md_to_json -o $repo_file
           done
 
       # Regrouper les fichiers CSV
