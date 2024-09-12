@@ -29,11 +29,12 @@ jobs:
           done
 
 
-      # Installation de NodeJS
-      - name: Installation de NodeJS
-        uses: actions/setup-node@v4
+      # Installation de python
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          node-version: 18
+          python-version: '3.10' 
+
 
       # Lister et convertir fichiers MD en CSV
       - name: Convertir MD en CSV
@@ -44,7 +45,7 @@ jobs:
 
           for repo_file in $repos; do
             echo "Convert $repo_file to CSV"
-            md_to_json -o $repo_file
+            md_to_json $repo_file.md -o $repo_file.json
           done
 
       # Regrouper les fichiers CSV
