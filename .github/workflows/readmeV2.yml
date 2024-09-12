@@ -51,8 +51,13 @@ jobs:
       # Regrouper les fichiers CSV
       - name: Regrouper les fichiers CSV
         run: |
-          mkdir -p readmes
-          cat $repo_name/README.csv > readmes/README-$repo_name.csv
+          repos=$(ls | grep README)
+          
+          for repo_file in $repos; do
+            echo "Regroupement des fichiers CSV"
+            mkdir -p readmes
+            cat $repo_name/README.csv > readmes/README-$repo_name.csv
+          done
 
       # Upload artifacts
       - name: 'Upload Artifacts'
