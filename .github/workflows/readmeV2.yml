@@ -36,30 +36,26 @@ jobs:
           python-version: '3.10' 
 
 
-      # Lister et convertir fichiers MD en JSON
-      - name: Convertir MD en JSON
+      # Lister et convertir fichiers MD en CSV
+      - name: Convertir MD en CSV
         run: |
           repos=$(ls | grep README)
 
-          pip install markdown-to-json
+          pip install -r requirements.txt
 
           for repo_file in $repos; do
-            echo "Convert $repo_file to JSON"
-            md_to_json $repo_file -o $repo_file.json
+            echo "Convert $repo_file to CSV"
+          ./mdtable2csv "$repo_file" > "${repo_file%.md}.csv"
           done
 
-      # Regrouper les fichiers JSON
-      - name: Regrouper les fichiers JSON
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Regrouper les fichiers CSV
+      - name: Regrouper les fichiers CSV
         run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-
+          repos=$(ls | grep README)
           for repo_name in $repos; do
-            mkdir -p readmes
-            echo "Regroupement des fichiers JSON"
-            cat $repo_name/README.json > readmes/README-$repo_name.json
-          done
+          echo
+          mkdir -p readmes
+          cat $repo_name/README.csv > readmes/README-$repo_name.csv
 
       # Upload artifacts
       - name: 'Upload Artifacts'
