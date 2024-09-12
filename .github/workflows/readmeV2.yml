@@ -41,7 +41,7 @@ jobs:
         run: |
           repos=$(ls | grep README)
 
-          pip install -r requirements.txt
+          $ pip install beautifulsoup4 flask
 
           for repo_file in $repos; do
             echo "Convert $repo_file to CSV"
