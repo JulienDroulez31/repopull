@@ -42,7 +42,7 @@ jobs:
           npm install -g md2csv
 
           for repo_file in $repos; do
-            echo "Convert $repo_file" to CSV"
+            echo "Convert $repo_file to CSV"
             md2csv "$repo_file" > "${repo_file%.md}.csv"
           done
 
