@@ -52,10 +52,10 @@ jobs:
       - name: Regrouper les fichiers CSV
         run: |
           repos=$(ls | grep README)
-          
-          for repo_file in $repos; do
-            echo "Regroupement des fichiers CSV"
+
+          for repo_name in $repos; do
             mkdir -p readmes
+            echo "Regroupement des fichiers CSV"
             cat $repo_name/README.csv > readmes/README-$repo_name.csv
           done
 
