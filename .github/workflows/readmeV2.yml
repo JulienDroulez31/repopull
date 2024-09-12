@@ -34,22 +34,28 @@ jobs:
         with:
           node-version: 20
 
-      # Convertir fichiers MD en CSV
+      # Lister et convertir fichiers MD en CSV
       - name: Convertir MD en CSV
         run: |
-          npm install md2csv -g
-          md2csv $repo_name/README-*.md
+          repos=$(ls | grep README)
+
+          npm install -g md2csv
+
+          for repo_file in $repos; do
+            echo "Convert $repo_file" to CSV"
+            md2csv "$repo_file" > "${repo_file%.md}.csv"
+          done
 
       # Regrouper les fichiers CSV
       - name: Regrouper les fichiers CSV
         run: |
           mkdir -p readmes
-          cat $repo_name/README-*.csv > readmes/README-$repo_name.csv
+          cat $repo_name/README.csv > readmes/README-$repo_name.csv
 
       # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
         with:
           name: README
-          path: README-*.md
+          path: README.md
           retention-days: 90
