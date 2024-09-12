@@ -51,7 +51,7 @@ jobs:
       # Regrouper les fichiers CSV
       - name: Regrouper les fichiers CSV
         run: |
-          repos=$(ls | grep README)
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
 
           for repo_name in $repos; do
             mkdir -p readmes
