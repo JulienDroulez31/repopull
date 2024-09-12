@@ -39,7 +39,7 @@ jobs:
       # Lister et convertir fichiers MD en CSV
       - name: Convertir MD en CSV
         run: |
-          repos=$(ls | grep README)
+          repos=$(ls README*)
 
           $ pip install beautifulsoup4 flask
 
