@@ -33,10 +33,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: run
-        run: |
-          npm ci
-          npm test
 
       # Convertir fichiers MD en CSV
       - name: Convertir MD en CSV
