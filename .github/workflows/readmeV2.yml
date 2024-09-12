@@ -55,7 +55,7 @@ jobs:
       - name: Regrouper les fichiers JSON
         run: |
           mkdir -p readmes_json
-          cat README-*.json > readmes_json/README.json
+          cat README.json > readmes_json/README.json
 
       # Upload artifacts
       - name: 'Upload Artifacts'
