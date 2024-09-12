@@ -43,7 +43,7 @@ jobs:
 
           for repo_file in $repos; do
             echo "Convert $repo_file to CSV"
-            md2csv $repo_file > $repo_file.md.csv"
+            md2csv $repo_file > $repo_file.md.csv
           done
 
       # Regrouper les fichiers CSV
