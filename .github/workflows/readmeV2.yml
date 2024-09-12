@@ -1,6 +1,7 @@
 name: Collect README V2.md
 
 on:
+  push:
   schedule:
     - cron: '0 0 * * 0'  # Exécution une fois par semaine
   workflow_dispatch:     # Exécution manuelle
