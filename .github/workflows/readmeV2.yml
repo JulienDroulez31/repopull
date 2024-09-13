@@ -44,12 +44,20 @@ jobs:
         run: |
           npm install @moox/markdown-to-json
 
+      # Vérifier les fichiers README.md récupérés
+      - name: List README.md files
+        run: ls -l README-*.md
+
       # Convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
           for repo_file in README-*.md; do
-            echo "Convert $repo_file to JSON"
-            npx markdown-to-json $repo_file
+            if [ -f "$repo_file" ]; then
+              echo "Convert $repo_file to JSON"
+              npx markdown-to-json $repo_file
+            else
+              echo "$repo_file does not exist"
+            fi
           done
 
       # Regrouper les fichiers JSON
@@ -57,8 +65,12 @@ jobs:
         run: |
           mkdir -p readmes
           for repo_file in README-*.json; do
-            echo "Moving $repo_file to readmes/"
-            mv "$repo_file" "readmes/$repo_file"
+            if [ -f "$repo_file" ]; then
+              echo "Moving $repo_file to readmes/"
+              mv "$repo_file" "readmes/$repo_file"
+            else
+              echo "$repo_file does not exist"
+            fi
           done
 
       # Upload artifacts
