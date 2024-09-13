@@ -28,6 +28,9 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
+# Lister les fichiers pour voir si les README.md ont été récupérés
+      - name: Lister les fichiers README.md récupérés
+        run: ls -l
 
         # Installation de python
       - uses: actions/checkout@v4
@@ -46,6 +49,9 @@ jobs:
             npx markdown-to-json $repo_file
           done
 
+# Lister les fichiers JSON après conversion
+      - name: Lister les fichiers JSON créés
+        run: ls -l *.json
 
       #  # Lister et convertir fichiers JSON en CSV
       # - name: Convertir JSON en CSV
