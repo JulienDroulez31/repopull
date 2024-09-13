@@ -12,7 +12,7 @@ jobs:
 
     steps:
 
-      # Liste tous les dépôts de l'organisation et récupère les README.md
+      # Lister les repos et récupèrer les README.md
       - name: Collect README.md from repositories
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,6 +29,13 @@ jobs:
           done
 
 
+        # Installation de python
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+           python-version: '3.10' 
+
+
       # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
@@ -39,16 +46,11 @@ jobs:
             npx markdown-to-json $repo_file
           done
 
-        # Installation de python
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-           python-version: '3.10' 
 
        # Lister et convertir fichiers JSON en CSV
       - name: Convertir JSON en CSV
         run: |
-          repos=$(ls | grep README)
+          repos=$(ls | grep -E 'README.*\.json')
 
            pip install csvkit
 
@@ -57,14 +59,16 @@ jobs:
              in2csv $repo_file.json > $repo_file.csv
            done
 
-       # Regrouper les fichiers CSV
-      - name: Regrouper les fichiers CSV
-        run: |
-           mkdir -p readmes
-           for repo_file in README-*.csv; do
-             echo "Moving $repo_file to readmes/"
-             mv "$repo_file" "readmes/$repo_file"
-           done
+
+      # # Regrouper les fichiers CSV
+      # - name: Regrouper les fichiers CSV
+      #   run: |
+      #     mkdir -p readmes
+      #     for repo_file in README-*.csv; do
+      #       echo "Moving $repo_file to readmes/"
+      #       mv "$repo_file" "readmes/$repo_file"
+      #     done
+
 
        # Upload artifacts
       - name: 'Upload Artifacts'
