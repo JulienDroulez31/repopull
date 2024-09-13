@@ -48,7 +48,7 @@ jobs:
        # Lister et convertir fichiers JSON en CSV
       - name: Convertir JSON en CSV
         run: |
-          repos=$(ls | grep README.json)
+          repos=$(ls | grep README)
 
            pip install csvkit
 
