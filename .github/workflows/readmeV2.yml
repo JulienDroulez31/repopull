@@ -62,6 +62,12 @@ jobs:
           done
 
       # Vérifier les fichiers CSV générés
+      - name: List files before moving
+        run: |
+          echo "Listing files before moving:"
+          ls
+
+      # Vérifier les fichiers CSV générés après conversion
       - name: List CSV files
         run: |
           echo "Listing CSV files:"
@@ -73,6 +79,12 @@ jobs:
           mkdir -p readmes
           echo "Moving CSV files to readmes/"
           mv README-*.csv readmes/ || echo "No CSV files to move"
+
+       # Vérifier les fichiers dans le répertoire readmes
+      - name: List files in readmes
+        run: |
+          echo "Listing files in readmes:"
+          ls readmes/ || echo "No files in readmes directory"
 
        # Upload artifacts
       - name: 'Upload Artifacts'
