@@ -18,6 +18,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+          echo "Repositories found: $repos"
           for repo_name in $repos; do
             echo "Fetching README.md from $repo_name"
             response=$(curl -sL \
@@ -28,6 +29,7 @@ jobs:
             
             if echo "$response" | jq -e .content > /dev/null; then
               echo "$response" | jq -r '.content' | base64 --decode > README-$repo_name.md
+              echo "Created README-$repo_name.md"
             else
               echo "No valid README.md found in $repo_name"
             fi
@@ -46,7 +48,11 @@ jobs:
 
       # Vérifier les fichiers README.md récupérés
       - name: List README.md files
-        run: ls -l README-*.md
+        run: |
+          echo "Current directory files:"
+          ls -l
+          echo "Attempting to list README-*.md files:"
+          ls -l README-*.md || echo "No README-*.md files found"
 
       # Convertir fichiers MD en JSON
       - name: Convertir MD en JSON
