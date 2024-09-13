@@ -45,6 +45,7 @@ jobs:
 
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
+            iconv -f US-ASCII -t UTF-8 $repo_file -o $repo_file-utf8
             pandoc -f markdown -t json -o $repo_file.json $repo_file
           done
 
