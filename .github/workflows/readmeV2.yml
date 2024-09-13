@@ -56,7 +56,7 @@ jobs:
            mkdir -p readmes
            mv "$repo_file" "readmes/$repo_file"
              echo "Convert $repo_file to CSV"
-             in2csv $repo_file.json > $repo_file.csv
+             in2csv $repo_file > $repo_file.csv
            done
 
       # # Regrouper les fichiers CSV
