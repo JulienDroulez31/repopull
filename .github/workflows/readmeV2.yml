@@ -28,6 +28,7 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
+
       # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
@@ -38,7 +39,7 @@ jobs:
             npx markdown-to-json $repo_file
           done
 
-      # Installation de python
+        # Installation de python
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
@@ -48,48 +49,29 @@ jobs:
       - name: Convertir JSON en CSV
         run: |
           repos=$(ls | grep README)
-          pip install csvkit
-          for repo_file in $repos; do
-            base_name=$(echo $repo_file | sed 's/.md$//')
-            json_file="${base_name}.json"
-            csv_file="${base_name}.csv"
-            if [ -f "$json_file" ]; then
-              echo "Convert $json_file to CSV"
-              in2csv "$json_file" > "$csv_file"
-            else
-              echo "Error: $json_file does not exist"
-            fi
-          done
 
-      # Vérifier les fichiers CSV générés
-      - name: List files before moving
-        run: |
-          echo "Listing files before moving:"
-          ls
+           pip install csvkit
 
-      # Vérifier les fichiers CSV générés après conversion
-      - name: List CSV files
-        run: |
-          echo "Listing CSV files:"
-          ls README-*.csv || echo "No CSV files found"
+           for repo_file in $repos; do
+           mkdir -p readmes
+           mv "$repo_file" "readmes/$repo_file"
+             echo "Convert $repo_file to CSV"
+             in2csv $repo_file.json > $repo_file.csv
+           done
 
-      # Regrouper les fichiers CSV
-      - name: Regrouper les fichiers CSV
-        run: |
-          mkdir -p readmes
-          echo "Moving CSV files to readmes/"
-          mv README-*.csv readmes/ || echo "No CSV files to move"
-
-       # Vérifier les fichiers dans le répertoire readmes
-      - name: List files in readmes
-        run: |
-          echo "Listing files in readmes:"
-          ls readmes/ || echo "No files in readmes directory"
+      # # Regrouper les fichiers CSV
+      # - name: Regrouper les fichiers CSV
+      #   run: |
+      #     mkdir -p readmes
+      #     for repo_file in README-*.csv; do
+      #       echo "Moving $repo_file to readmes/"
+      #       mv "$repo_file" "readmes/$repo_file"
+      #     done
 
        # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
         with:
           name: README
-          path: readmes/README-*.csv
+          path: README-*.csv
           retention-days: 90
