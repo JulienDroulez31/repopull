@@ -28,7 +28,6 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
-
       # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
@@ -39,7 +38,7 @@ jobs:
             npx markdown-to-json $repo_file
           done
 
-        # Installation de python
+      # Installation de python
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
@@ -62,19 +61,23 @@ jobs:
             fi
           done
 
-       # Regrouper les fichiers CSV
+      # Vérifier les fichiers CSV générés
+      - name: List CSV files
+        run: |
+          echo "Listing CSV files:"
+          ls README-*.csv || echo "No CSV files found"
+
+      # Regrouper les fichiers CSV
       - name: Regrouper les fichiers CSV
         run: |
-           mkdir -p readmes
-             for repo_file in README-*.csv; do
-             echo "Moving $repo_file to readmes/"
-             mv "$repo_file" "readmes/$repo_file"
-           done
+          mkdir -p readmes
+          echo "Moving CSV files to readmes/"
+          mv README-*.csv readmes/ || echo "No CSV files to move"
 
        # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
         with:
           name: README
-          path: README-*.csv
+          path: readmes/README-*.csv
           retention-days: 90
