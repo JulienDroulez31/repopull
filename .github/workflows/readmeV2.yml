@@ -41,12 +41,11 @@ jobs:
         run: |
           repos=$(ls | grep README)
 
-          sudo apt-get install pandoc
+          npm install @moox/markdown-to-json
 
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
-            iconv -f US-ASCII -t UTF-8 $repo_file -o $repo_file-utf8
-            pandoc -f markdown -t json -o $repo_file.json $repo_file
+            npx markdown-to-json $repo_file
           done
 
       # # Regrouper les fichiers CSV
