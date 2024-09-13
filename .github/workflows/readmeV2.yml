@@ -41,23 +41,23 @@ jobs:
             npx markdown-to-json $repo_file
           done
 
-       # Installation de python
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.10' 
+      #  # Installation de python
+      # - uses: actions/checkout@v4
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.10' 
 
-      # Lister et convertir fichiers JSON en CSV
-      - name: Convertir JSON en CSV
-        run: |
-          repos=$(ls | grep README.json)
+      # # Lister et convertir fichiers JSON en CSV
+      # - name: Convertir JSON en CSV
+      #   run: |
+      #     repos=$(ls | grep README.json)
 
-          pip install csvkit
+      #     pip install csvkit
 
-          for repo_file in $repos; do
-            echo "Convert $repo_file to CSV"
-            in2csv $repo_file.json > $repo_file.csv
-          done
+      #     for repo_file in $repos; do
+      #       echo "Convert $repo_file to CSV"
+      #       in2csv $repo_file.json > $repo_file.csv
+      #     done
 
       # # Regrouper les fichiers CSV
       # - name: Regrouper les fichiers CSV
@@ -68,10 +68,10 @@ jobs:
       #     mkdir -p readmes
       #     cat $repo_name/README.csv > readmes/README-$repo_name.csv
 
-      # # Upload artifacts
-      # - name: 'Upload Artifacts'
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: README
-      #     path: README.md
-      #     retention-days: 90
+       # Upload artifacts
+      - name: 'Upload Artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          name: README
+          path: README.json
+          retention-days: 90
