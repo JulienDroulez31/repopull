@@ -45,22 +45,22 @@ jobs:
 
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
-            pandoc -f markdown -t json -o $repo_file.json README.md
+            pandoc -f markdown -t json -o $repo_file.json $repo_file/README.md
           done
 
-      # Regrouper les fichiers CSV
-      - name: Regrouper les fichiers CSV
-        run: |
-          repos=$(ls | grep README)
-          for repo_name in $repos; do
-          echo
-          mkdir -p readmes
-          cat $repo_name/README.csv > readmes/README-$repo_name.csv
+      # # Regrouper les fichiers CSV
+      # - name: Regrouper les fichiers CSV
+      #   run: |
+      #     repos=$(ls | grep README)
+      #     for repo_name in $repos; do
+      #     echo
+      #     mkdir -p readmes
+      #     cat $repo_name/README.csv > readmes/README-$repo_name.csv
 
-      # Upload artifacts
-      - name: 'Upload Artifacts'
-        uses: actions/upload-artifact@v4
-        with:
-          name: README
-          path: README.md
-          retention-days: 90
+      # # Upload artifacts
+      # - name: 'Upload Artifacts'
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: README
+      #     path: README.md
+      #     retention-days: 90
