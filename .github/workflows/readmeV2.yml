@@ -3,8 +3,8 @@ name: Collect README V2.md
 on:
   push:
   schedule:
-    - cron: '0 0 * * 0'
-  workflow_dispatch:
+    - cron: '0 0 * * 0'  # Exécution une fois par semaine
+  workflow_dispatch:     # Exécution manuelle
 
 jobs:
   collect-readmes:
@@ -28,21 +28,22 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
-      # Installer Pandoc pour convertir Markdown en CSV
-      - name: Install Pandoc
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y pandoc
-
-      # Convertir les fichiers README.md en CSV
-      - name: Convertir MD en CSV
+      # Script pour convertir des tableaux Markdown en CSV
+      - name: Convertir les tableaux Markdown en CSV
         run: |
           for file in README-*.md; do
             base_name=$(basename "$file" .md)
             csv_file="${base_name}.csv"
             
-            # Convertir Markdown en CSV avec Pandoc
-            pandoc "$file" --to=csv --output="$csv_file"
+            # Utiliser awk pour convertir le tableau Markdown en CSV
+            awk '
+              BEGIN { FS="|"; OFS="," }
+              /^[|]/ && !/^[-+]/ {
+                $1=""; $NF="";  # Remove leading and trailing pipes
+                gsub(/^[ \t]+|[ \t]+$/, "", $0);  # Trim spaces
+                print $0
+              }
+            ' "$file" > "$csv_file"
             
             echo "Converted $file to $csv_file"
           done
