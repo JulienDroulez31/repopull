@@ -50,13 +50,13 @@ jobs:
        # Lister et convertir fichiers JSON en CSV
       - name: Convertir JSON en CSV
         run: |
-          repos=$(ls)
+          repos=$(ls | grep README)
 
            pip install csvkit
 
            for repo_file in $repos; do
              echo "Convert $repo_file to CSV"
-             in2csv $repo_file.json > $repo_file.csv
+             in2csv $repos.json > $repos.csv
            done
 
 
