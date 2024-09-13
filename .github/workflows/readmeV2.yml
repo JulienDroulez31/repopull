@@ -47,27 +47,27 @@ jobs:
           done
 
 
-       # Lister et convertir fichiers JSON en CSV
-      - name: Convertir JSON en CSV
-        run: |
-          repos=$(ls | grep README)
-
-           pip install csvkit
-
-           for repo_file in $repos; do
-             echo "Convert $repo_file to CSV"
-             in2csv $repo_file.json > $repo_file.csv
-           done
-
-
-      # # Regrouper les fichiers CSV
-      # - name: Regrouper les fichiers CSV
+      #  # Lister et convertir fichiers JSON en CSV
+      # - name: Convertir JSON en CSV
       #   run: |
-      #     mkdir -p readmes
-      #     for repo_file in README-*.csv; do
-      #       echo "Moving $repo_file to readmes/"
-      #       mv "$repo_file" "readmes/$repo_file"
-      #     done
+      #     repos=$(ls | grep README)
+
+      #      pip install csvkit
+
+      #      for repo_file in $repos; do
+      #        echo "Convert $repo_file to CSV"
+      #        in2csv $repo_file.json > $repo_file.csv
+      #      done
+
+
+       # Regrouper les fichiers json
+      - name: Regrouper les fichiers json
+        run: |
+           mkdir -p readmes
+           for repo_file in README-*.json; do
+             echo "Moving $repo_file to readmes/"
+             mv "$repo_file" "readmes/$repo_file"
+           done
 
 
        # Upload artifacts
@@ -75,5 +75,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: README
-          path: README-*.csv
+          path: readmes
           retention-days: 90
