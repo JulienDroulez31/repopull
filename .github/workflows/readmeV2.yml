@@ -56,7 +56,7 @@ jobs:
 
            for repo_file in $repos; do
              echo "Convert $repo_file to CSV"
-             in2csv $repo_file.json > $repo_file.csv
+             in2csv $repo_file > $repo_file.csv
            done
 
 
