@@ -45,7 +45,7 @@ jobs:
 
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
-            pandoc -f markdown -t json -o $repo_file.json $repo_file/README.md
+            pandoc -f markdown -t json -o $repo_file.json $repo_file
           done
 
       # # Regrouper les fichiers CSV
