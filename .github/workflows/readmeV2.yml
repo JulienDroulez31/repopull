@@ -52,7 +52,7 @@ jobs:
         run: |
           repos=$(ls | grep README)
 
-          brew install csvkit
+          pip install csvkit
 
           for repo_file in $repos; do
             echo "Convert $repo_file to CSV"
