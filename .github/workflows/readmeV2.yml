@@ -80,7 +80,7 @@ jobs:
            mkdir -p readmes
            for repo_name in README.json; do
              echo "Moving $repo_name to readmes/"
-             mv "README-$repo_name.json" "readmes/$repo_name"
+             mv "README-$repo_name" "readmes/$repo_name"
            done
 
 
