@@ -47,9 +47,13 @@ jobs:
             echo "Convert $repo_file to JSON"
             npx markdown-to-json $repo_file
           done
-# Lister les fichiers JSON après conversion
+      # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
-        run: ls -l *.json
+        run: |
+          repos=$(ls | grep README)
+          for repo_file in $repos; do
+            ls -l *.json
+          done
 
       #  # Lister et convertir fichiers JSON en CSV
       # - name: Convertir JSON en CSV
@@ -67,7 +71,7 @@ jobs:
        # Regrouper les fichiers json
       - name: Regrouper les fichiers json
         run: |
-           mkdir readmes
+           mkdir -p readmes
            for repo_file in README.json; do
              echo "Moving $repo_file to readmes/"
              mv "$repo_file" "readmes/$repo_file"
