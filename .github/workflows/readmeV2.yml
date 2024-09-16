@@ -45,7 +45,7 @@ jobs:
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
           npm install @moox/markdown-to-json
-          
+          ls -l
           for repo_name in $repos; do
           echo "Convert $repo_name to JSON"
           npx markdown-to-json "README-$repo_name.md"
