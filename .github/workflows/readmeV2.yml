@@ -53,12 +53,12 @@ jobs:
           npm i -g markdown-to-json
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
-            m2j $repo_file
+            m2j $repo_file 2>&1 | tee conversion.log
           done
 
-      # Lister les fichiers JSON après conversion
-      - name: Lister les fichiers JSON créés
-        run: ls -l *.json
+      # Lister tous les fichiers après conversion
+      - name: Lister tous les fichiers après conversion
+        run: ls -l
 
       # Regrouper les fichiers json
       - name: Regrouper les fichiers json
