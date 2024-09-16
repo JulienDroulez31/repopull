@@ -76,11 +76,14 @@ jobs:
 
        # Regrouper les fichiers json
       - name: Regrouper les fichiers json
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
            mkdir -p readmes
-           for repo_name in README.json; do
+           for repo_name in $repos; do
              echo "Moving $repo_name to readmes/"
-             mv "README-$repo_name" "readmes/$repo_name"
+             mv "$repo_name" "readmes/$repo_name"
            done
 
 
