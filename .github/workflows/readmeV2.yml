@@ -51,21 +51,23 @@ jobs:
             echo "Convert $repo_file to JSON"
             m2j $repo_file
           done
-      
+
       # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ls -l
+        run: ls -l *.json
 
       # Regrouper les fichiers json
       - name: Regrouper les fichiers json
         run: |
            mkdir -p readmes
-           for repo_file in *.json; do
-             echo "Moving $repo_file to readmes/"
-             mv "$repo_file" "readmes/"
-           done
+           if ls *.json 1> /dev/null 2>&1; then
+             for repo_file in *.json; do
+               echo "Moving $repo_file to readmes/"
+               mv "$repo_file" "readmes/"
+             done
+           else
+             echo "No JSON files found to move."
+           fi
 
       # Upload artifacts
       - name: 'Upload Artifacts'
