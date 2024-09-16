@@ -44,7 +44,7 @@ jobs:
           npm install @moox/markdown-to-json
           for repo_file in README-*.md; do
             echo "Convert $repo_file to JSON"
-            npx markdown-to-json $repo_file -o ${repo_file%.md}.json
+            npx markdown-to-json "$repo_file" -o "${repo_file%.md}.json"
           done
 # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
