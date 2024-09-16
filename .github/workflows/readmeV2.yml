@@ -48,7 +48,7 @@ jobs:
           
           for repo_name in $repos; do
           echo "Convert $repo_name to JSON"
-          npx markdown-to-json "README.md"
+          npx markdown-to-json "$repo_name.md"
             curl -L \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
