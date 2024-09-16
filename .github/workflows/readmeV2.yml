@@ -11,8 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      # Lister les repos et récupèrer les README.md
+      # Lister les repos et récupérer les README.md
       - name: Collect README.md from repositories
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -27,64 +26,40 @@ jobs:
               https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
-# Lister les fichiers pour voir si les README.md ont été récupérés
+
+      # Lister les fichiers pour voir si les README.md ont été récupérés
       - name: Lister les fichiers README.md récupérés
         run: ls -l *.md
 
-        # Installation de python
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      # Installer Node.js et le package markdown-to-json
+      - uses: actions/setup-node@v3
         with:
-           python-version: '3.10' 
+          node-version: '16'
 
-
-      # Lister et convertir fichiers MD en JSON
       - name: Convertir README.md en JSON
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
           npm install @moox/markdown-to-json
           
           for repo_name in $repos; do
-          echo "Convert README-$repo_name.md to README-$repo_name.json"
-          npx markdown-to-json "README.md"
-            curl -L \
-              -H "Accept: application/vnd.github+json" \
-              -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.json \
-              | jq -r '.content' | base64 --decode > README-$repo_name.json
+            echo "Convert README-$repo_name.md to README-$repo_name.json"
+            npx markdown-to-json "README-$repo_name.md" > "README-$repo_name.json"
           done
-# Lister les fichiers JSON après conversion
+
+      # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
         run: ls -l *.json
 
-      #  # Lister et convertir fichiers JSON en CSV
-      # - name: Convertir JSON en CSV
-      #   run: |
-      #     repos=$(ls | grep README)
-
-      #      pip install csvkit
-
-      #      for repo_file in $repos; do
-      #        echo "Convert $repo_file to CSV"
-      #        in2csv $repo_file.json > $repo_file.csv
-      #      done
-
-
-       # Regrouper les fichiers json
-      - name: Regrouper les fichiers json
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Regrouper les fichiers JSON
+      - name: Regrouper les fichiers JSON
         run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-           mkdir -p readmes
-           for repo_name in $repos; do
-             echo "Moving $repo_name to readmes/"
-             mv "README-$repo_name.json" "readmes/$repo_name"
-           done
-       # Upload artifacts
+          mkdir -p readmes
+          for file in README-*.json; do
+            echo "Moving $file to readmes/"
+            mv "$file" "readmes/"
+          done
+
+      # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
         with:
