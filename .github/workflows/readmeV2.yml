@@ -27,61 +27,42 @@ jobs:
               https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
-        # Lister les fichiers pour voir si les README.md ont été récupérés
+
+      # Lister les fichiers pour voir si les README.md ont été récupérés
       - name: Lister les fichiers README.md récupérés
         run: ls -l
 
-        # Installation de python
+      # Installation de python et markdown-to-json
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-           python-version: '3.10' 
+           python-version: '3.10'
+      - run: npm install @moox/markdown-to-json
 
-
-      # Lister et convertir fichiers MD en JSON
+      # Convertir fichiers README.md en JSON
       - name: Convertir MD en JSON
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
           for repo_name in $repos; do
-          (ls | grep README)
-          npm install @moox/markdown-to-json
-          for repo_file in $repos; do
-            echo "Convert $repo_file to JSON"
-            npx markdown-to-json $repo_file
+            if [ -f README-$repo_name.md ]; then
+              echo "Converting README-$repo_name.md to JSON"
+              npx markdown-to-json README-$repo_name.md > README-$repo_name.json
+            fi
           done
 
       # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
+        run: ls -l *.json
+
+      # Regrouper les fichiers JSON
+      - name: Regrouper les fichiers JSON
         run: |
-          repos=$(ls | grep README)
-          for repo_file in $repos; do
-            ls -l *.json
-          done
+          mkdir -p readmes
+          mv *.json readmes/
 
-      #  # Lister et convertir fichiers JSON en CSV
-      # - name: Convertir JSON en CSV
-      #   run: |
-      #     repos=$(ls | grep README)
-
-      #      pip install csvkit
-
-      #      for repo_file in $repos; do
-      #        echo "Convert $repo_file to CSV"
-      #        in2csv $repo_file.json > $repo_file.csv
-      #      done
-
-
-       # Regrouper les fichiers json
-      - name: Regrouper les fichiers json
-        run: |
-           mkdir -p readmes
-           for repo_file in README.json; do
-             echo "Moving $repo_file to readmes/"
-             mv "$repo_file" "readmes/$repo_file"
-           done
-       # Upload artifacts
+      # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
         with:
