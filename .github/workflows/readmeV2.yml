@@ -31,13 +31,6 @@ jobs:
       - name: Lister les fichiers README.md récupérés
         run: ls -l
 
-        # Installation de python
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-           python-version: '3.10' 
-
-
       # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
