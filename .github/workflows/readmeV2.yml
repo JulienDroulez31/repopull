@@ -47,7 +47,7 @@ jobs:
           npm install @moox/markdown-to-json
           
           for repo_name in $repos; do
-          echo "Convert $repo_name to JSON"
+          echo "Convert README-$repo_name to JSON"
           npx markdown-to-json "README.md"
             curl -L \
               -H "Accept: application/vnd.github+json" \
