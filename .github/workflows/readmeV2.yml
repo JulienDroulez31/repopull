@@ -31,6 +31,8 @@ jobs:
 
         # Lister les fichiers pour voir si les README.md ont été récupérés
       - name: Lister les fichiers README.md récupérés
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ls -l
 
 
@@ -43,6 +45,8 @@ jobs:
 
       # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=$(ls)
           npm i -g markdown-to-json
@@ -54,6 +58,8 @@ jobs:
       
       # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ls -l
 
 
