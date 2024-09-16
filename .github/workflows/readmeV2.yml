@@ -44,11 +44,11 @@ jobs:
       # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
-          repos=$(ls -l)
-          npm install @moox/markdown-to-json
+          repos=$(ls)
+          npm i -g markdown-to-json
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
-            npx markdown-to-json $repo_file
+            m2j $repo_file
           done
       
       
