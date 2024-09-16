@@ -27,7 +27,7 @@ jobs:
               https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
-# Lister les fichiers pour voir si les README.md ont été récupérés
+        # Lister les fichiers pour voir si les README.md ont été récupérés
       - name: Lister les fichiers README.md récupérés
         run: ls -l
 
@@ -41,12 +41,15 @@ jobs:
       # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
-          repos=$(ls | grep README)
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+          for repo_name in $repos; do
+          (ls | grep README)
           npm install @moox/markdown-to-json
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
             npx markdown-to-json $repo_file
           done
+
       # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
         run: |
