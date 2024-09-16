@@ -27,9 +27,11 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
+
       # Lister les fichiers pour voir si les README.md ont été récupérés
       - name: Lister les fichiers README.md récupérés
         run: ls -l *.md
+
 
       # Installer Node.js et le package markdown-to-json
       - uses: actions/setup-node@v3
@@ -48,19 +50,36 @@ jobs:
             npx markdown-to-json "README-$repo_name.md" > "README-$repo_name.json"
           done
 
+
       # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
         run: ls -l *.json
 
-      # Regrouper les fichiers JSON
-      - name: Regrouper les fichiers JSON
+
+        # Lister et convertir fichiers JSON en CSV
+      - name: Convertir JSON en CSV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+          pip install csvkit
+
+          for repo_name in $repos; do
+            echo "Convert $repo_name to CSV"
+            in2csv "README-$repo_name.json" > "README-$repo_name.csv"
+          done
+
+
+      # Regrouper les fichiers CSV
+      - name: Regrouper les fichiers CSV
         run: |
           mkdir -p readmes
-          for file in README-*.json; do
+          for file in README-*.csv; do
             echo "Moving $file to readmes/"
             mv "$file" "readmes/"
           done
 
+          
       # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
