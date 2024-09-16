@@ -41,7 +41,7 @@ jobs:
       # Lister et convertir fichiers MD en JSON
       - name: Convertir README.md en JSON
         run: |
-          repos=$(ls README-*.md)
+          repos=$(ls README-*)
           npm install @moox/markdown-to-json
           for repo_file in $repos; do
             echo "Convert $repo_file to JSON"
