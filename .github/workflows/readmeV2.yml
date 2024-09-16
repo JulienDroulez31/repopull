@@ -67,7 +67,7 @@ jobs:
        # Regrouper les fichiers json
       - name: Regrouper les fichiers json
         run: |
-           mkdir -p readmes
+           mkdir readmes
            for repo_file in README.json; do
              echo "Moving $repo_file to readmes/"
              mv "$repo_file" "readmes/$repo_file"
