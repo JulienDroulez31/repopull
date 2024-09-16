@@ -12,74 +12,67 @@ jobs:
 
     steps:
 
-      # Lister les repos et récupérer les README.md
+      # Lister les repos et récupèrer les README.md
       - name: Collect README.md from repositories
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-          echo "Repositories found: $repos"
           for repo_name in $repos; do
             echo "Fetching README.md from $repo_name"
-            response=$(curl -sL \
+            curl -L \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
               -H "X-GitHub-Api-Version: 2022-11-28" \
-              https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md)
-            
-            if echo "$response" | jq -e .content > /dev/null; then
-              echo "$response" | jq -r '.content' | base64 --decode > README-$repo_name.md
-              echo "Created README-$repo_name.md"
-            else
-              echo "No valid README.md found in $repo_name"
-            fi
+              https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
+              | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
+# Lister les fichiers pour voir si les README.md ont été récupérés
+      - name: Lister les fichiers README.md récupérés
+        run: ls -l
 
-      # Installation de python
+        # Installation de python
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10' 
+           python-version: '3.10' 
 
-      # Installer les dépendances npm
-      - name: Install npm dependencies
-        run: |
-          npm install @moox/markdown-to-json
 
-      # Vérifier les fichiers README.md récupérés
-      - name: List README.md files
-        run: |
-          echo "Current directory files:"
-          ls -l
-          echo "Attempting to list README-*.md files:"
-          ls -l README-*.md || echo "No README-*.md files found"
-
-      # Convertir fichiers MD en JSON
+      # Lister et convertir fichiers MD en JSON
       - name: Convertir MD en JSON
         run: |
-          for repo_file in README-*.md; do
-            if [ -f "$repo_file" ]; then
-              echo "Convert $repo_file to JSON"
-              npx markdown-to-json $repo_file
-            else
-              echo "$repo_file does not exist"
-            fi
+          repos=$(ls | grep README)
+          npm install @moox/markdown-to-json
+          for repo_file in $repos; do
+            echo "Convert $repo_file to JSON"
+            npx markdown-to-json $repo_file
           done
+# Lister les fichiers JSON après conversion
+      - name: Lister les fichiers JSON créés
+        run: ls -l *.json
 
-      # Regrouper les fichiers JSON
-      - name: Regrouper les fichiers JSON
+      #  # Lister et convertir fichiers JSON en CSV
+      # - name: Convertir JSON en CSV
+      #   run: |
+      #     repos=$(ls | grep README)
+
+      #      pip install csvkit
+
+      #      for repo_file in $repos; do
+      #        echo "Convert $repo_file to CSV"
+      #        in2csv $repo_file.json > $repo_file.csv
+      #      done
+
+
+       # Regrouper les fichiers json
+      - name: Regrouper les fichiers json
         run: |
-          mkdir -p readmes
-          for repo_file in README-*.json; do
-            if [ -f "$repo_file" ]; then
-              echo "Moving $repo_file to readmes/"
-              mv "$repo_file" "readmes/$repo_file"
-            else
-              echo "$repo_file does not exist"
-            fi
-          done
-
-      # Upload artifacts
+           mkdir -p readmes
+           for repo_file in README.json; do
+             echo "Moving $repo_file to readmes/"
+             mv "$repo_file" "readmes/$repo_file"
+           done
+       # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
         with:
