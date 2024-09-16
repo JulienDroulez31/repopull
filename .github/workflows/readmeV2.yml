@@ -78,10 +78,12 @@ jobs:
       - name: Regrouper les fichiers json
         run: |
            mkdir -p readmes
-           for repo_file in README.json; do
-             echo "Moving $repo_file to readmes/"
-             mv "$repo_file" "readmes/$repo_file"
+           for repo_name in README.json; do
+             echo "Moving $repo_name to readmes/"
+             mv "README-$repo_name.json" "readmes/$repo_name"
            done
+
+
        # Upload artifacts
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
