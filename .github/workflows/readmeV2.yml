@@ -44,21 +44,20 @@ jobs:
       - name: Lister les fichiers Markdown avant conversion
         run: ls -l *.md
 
-      # Lister et convertir fichiers MD en JSON
-      - name: Convertir MD en JSON
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Installer les dépendances Python et convertir Markdown en JSON avec un script Python
+      - name: Installer les dépendances Python
         run: |
-          repos=$(ls *.md)
-          npm i -g markdown-to-json
-          for repo_file in $repos; do
-            echo "Convert $repo_file to JSON"
-            m2j $repo_file 2>&1 | tee conversion.log
-          done
+          pip install markdown
 
-      # Lister tous les fichiers après conversion
-      - name: Lister tous les fichiers après conversion
-        run: ls -l
+      - name: Convertir Markdown en JSON avec un script Python
+        run: |
+          python convert_md_to_json.py
+          # Lister les fichiers JSON après conversion pour vérifier leur présence
+          ls -l *.json
+
+      # Afficher le contenu du fichier de log de conversion
+      - name: Afficher le contenu du fichier de log de conversion
+        run: cat conversion.log
 
       # Regrouper les fichiers json
       - name: Regrouper les fichiers json
