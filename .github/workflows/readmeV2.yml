@@ -54,7 +54,7 @@ jobs:
       
       # Lister les fichiers JSON après conversion
       - name: Lister les fichiers JSON créés
-        run: ls -l *.json
+        run: ls -l
 
 
       #  # Lister et convertir fichiers JSON en CSV
