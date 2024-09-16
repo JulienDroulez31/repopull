@@ -38,6 +38,9 @@ jobs:
 
       - name: Convertir README.md en JSON
         run: |
+          env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
           npm install @moox/markdown-to-json
           
