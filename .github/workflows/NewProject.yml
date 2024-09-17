@@ -36,6 +36,8 @@ jobs:
 
       # Créer un fichier CSV
       - name: Créer un fichier CSV
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
 
