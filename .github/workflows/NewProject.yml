@@ -50,7 +50,7 @@ jobs:
 
       # Lister les fichiers pour voir si le CSV a été récupéré
       - name: Lister le fichier CSV
-        run: ls -l *.csv
+        run: ls -l results/*.csv
 
        # Convertir CSV en tableau MD
       # - name: Créer un fichier CSV par repo
