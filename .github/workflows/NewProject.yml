@@ -1,0 +1,46 @@
+name: New Project
+
+on:
+  push:
+  schedule:
+    - cron: '0 0 * * 0'  # Exécution une fois par semaine
+  workflow_dispatch:     # Exécution manuelle
+
+jobs:
+  collect-readmes:
+    runs-on: ubuntu-latest
+
+    steps:
+          # Lister les repos et récupérer les README.md
+      - name: Collect README.md from repositories
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+          
+          for repo_name in $repos; do
+            echo "Fetching README.md from $repo_name"
+            curl -L \
+              -H "Accept: application/vnd.github+json" \
+              -H "Authorization: Bearer ${{ secrets.ACCESS_TOKEN }}" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
+              | jq -r '.content' | base64 --decode > README-$repo_name.md
+          done
+
+      # Lister les fichiers pour voir si les README.md ont été récupérés
+      - name: Lister les fichiers README.md récupérés
+        run: ls -l *.md
+
+
+
+      # Créer un fichier CSV
+      - name: Créer un fichier CSV
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+
+          for repo_name in $repos; do
+            echo "Fetching README.md from $repo_name"
+            echo "$repo_name,test,test2" >> result.csv
+          done
+          cat result.csv
