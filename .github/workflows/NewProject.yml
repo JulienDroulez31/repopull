@@ -13,7 +13,7 @@ jobs:
     steps:
 
         # Lister les repos et récupérer les README
-      - name: Collect README.md from repositories
+        - name: Collect README.md from repositories
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
