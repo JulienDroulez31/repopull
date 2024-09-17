@@ -43,6 +43,7 @@ jobs:
           for repo_name in $repos; do
             mkdir -p results
             echo "Repository;Owner;Produit" >> results.csv
+            echo "" >> results.csv
             echo "$repo_name;Julien;Product2" >> results.csv
             mv "results.csv" "results/"
           done
