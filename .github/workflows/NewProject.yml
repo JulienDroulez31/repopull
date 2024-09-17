@@ -41,8 +41,10 @@ jobs:
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
           for repo_name in $repos; do
+            mkdir result
             echo "$repo_name,owner,produit" >> result.csv
             echo "$repo_name,owner1,produit1" >> result.csv
+            mv "result.csv" "result/"
           done
           cat result.csv
 
