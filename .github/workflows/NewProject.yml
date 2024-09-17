@@ -44,7 +44,7 @@ jobs:
             mkdir results
             echo "$repo_name,owner,produit" >> result.csv
             echo "$repo_name,owner1,produit1" >> result.csv
-            mv "result.csv" "result/"
+            mv "result.csv" "results/"
           done
           cat result.csv
 
