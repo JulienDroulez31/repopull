@@ -27,12 +27,24 @@ jobs:
               https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
-            echo "Affichage du fichier README-$repo_name.md"
-            cat "README-$repo_name.md"
 
       # Lister les fichiers pour voir si les README.md ont été récupérés
       - name: Lister les fichiers README.md récupérés
         run: ls -l *.md
+
+
+      # Affichage des fichiers README
+      - name: Affichage des fichiers README
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+          
+          for repo_name in $repos; do
+            echo "Affichage des fichiers README-$repo_name.md"
+            cat "README-$repo_name.md"
+          done
+
 
       # Créer un fichier CSV par repo
       - name: Créer un fichier CSV par repo
