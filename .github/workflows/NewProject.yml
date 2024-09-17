@@ -11,9 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-        # Lister les repos et récupérer les README
-        - name: Collect README.md from repositories
+          # Lister les repos et récupérer les README.md
+      - name: Collect README.md from repositories
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -28,21 +27,12 @@ jobs:
               https://api.github.com/repos/JulienDroulez31/$repo_name/contents/README.md \
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
-
-
-        # Lister les fichiers pour voir si les README.md ont été récupérés
-        - name: Lister les fichiers README.md récupérés
-          run: ls -l *.md
-
-
-        # Afficher les fichiers README
-        - name: Afficher les fichiers README
-          env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          run: |
             echo "Affichage du fichier README-$repo_name.md"
             cat "README-$repo_name.md"
 
+      # Lister les fichiers pour voir si les README.md ont été récupérés
+      - name: Lister les fichiers README.md récupérés
+        run: ls -l *.md
 
       # Créer un fichier CSV par repo
       - name: Créer un fichier CSV par repo
