@@ -32,8 +32,6 @@ jobs:
       - name: Lister les fichiers README.md récupérés
         run: ls -l *.md
 
-
-
       # Créer un fichier CSV par repo
       - name: Créer un fichier CSV par repo
         env:
@@ -49,7 +47,7 @@ jobs:
           done
           cat results/results.csv
 
-      # Lister les fichiers pour voir si le CSV a été récupéré
+      # Lister les fichiers CSV
       - name: Lister le fichier CSV
         run: ls -l results/*.csv
 
