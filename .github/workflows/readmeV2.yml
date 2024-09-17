@@ -57,24 +57,24 @@ jobs:
 
 
         # Lister et convertir fichiers JSON en CSV
-      - name: Convertir JSON en CSV
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
-        run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-          sudo apt install jq
+     # - name: Convertir JSON en CSV
+     #   env:
+     #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
+     #   run: |
+     #     repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+     #     sudo apt install jq
 
-          for repo_name in $repos; do
-            echo "Convert $repo_name to CSV"
-            cat "README-$repo_name.json" | jq
-          done
+     #     for repo_name in $repos; do
+     #       echo "Convert $repo_name to CSV"
+     #       cat "README-$repo_name.json" | jq
+     #     done
 
 
-      # Regrouper les fichiers CSV
-      - name: Regrouper les fichiers CSV
+      # Regrouper les fichiers JSON
+      - name: Regrouper les fichiers JSON
         run: |
           mkdir -p readmes
-          for file in README-*.csv; do
+          for file in README-*.json; do
             echo "Moving $file to readmes/"
             mv "$file" "readmes/"
           done
