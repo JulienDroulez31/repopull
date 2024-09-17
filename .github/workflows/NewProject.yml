@@ -46,7 +46,7 @@ jobs:
             echo "$repo_name,owner1,produit1" >> resultats.csv
             mv "resultats.csv" "resultats/"
           done
-          cat resultats.csv
+          cat resultats/resultats.csv
 
       # Convertir CSV en tableau MD
       - name: Créer un fichier CSV par repo
