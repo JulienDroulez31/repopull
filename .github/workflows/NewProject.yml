@@ -62,3 +62,11 @@ jobs:
             for csv_file in results/*.csv; do
             csv2md $csv_file
             done
+            
+        # Upload artifacts
+      - name: 'Upload Artifacts'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Results
+          path: results
+          retention-days: 90
