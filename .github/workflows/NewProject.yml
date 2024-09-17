@@ -34,15 +34,14 @@ jobs:
 
 
 
-      # Créer un fichier CSV
-      - name: Créer un fichier CSV
+      # Créer un fichier CSV par repo
+      - name: Créer un fichier CSV par repo
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-
           for repo_name in $repos; do
-            echo "Fetching README.md from $repo_name"
-            echo "$repo_name,test,test2" >> result.csv
+            echo "$repo_name,owner,produit" >> result.csv
+            echo "$repo_name,owner1,produit1" >> result.csv
           done
           cat result.csv
