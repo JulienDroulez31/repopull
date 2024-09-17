@@ -62,11 +62,11 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}      
         run: |
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-          pip install csvkit
+          sudo apt install jq
 
           for repo_name in $repos; do
             echo "Convert $repo_name to CSV"
-            in2csv "README-$repo_name.json" > "README-$repo_name.csv"
+            cat "README-$repo_name.json" | jq '.[]| join(",")'
           done
 
 
