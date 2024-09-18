@@ -61,7 +61,7 @@ jobs:
             echo " "
           done
 
-        # Créer un fichier CSV par repo avec des données dynamiques
+      # Créer un fichier CSV par repo avec des données dynamiques
       - name: Créer un fichier CSV par repo
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,7 +77,7 @@ jobs:
             last_commit_date=$(curl -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date')
             
-        # Ajouter les informations du repo au fichier CSV
+            # Ajouter les informations du repo au fichier CSV
             echo "$repo_name;Julien;Product2;$last_commit_date" >> results/results.csv
           done
 
