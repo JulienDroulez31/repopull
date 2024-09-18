@@ -57,7 +57,7 @@ jobs:
           for repo_name in $repos; do
             echo "Récupération de la date du dernier commit"
             curl -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main"
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date'
           done
 
 
