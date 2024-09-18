@@ -52,7 +52,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name'
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
 
           for repo_name in $repos; do
             echo "Récupération de la date du dernier commit"
