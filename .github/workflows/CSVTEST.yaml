@@ -1,0 +1,24 @@
+name: CSV TEST
+
+on:
+  push:
+  schedule:
+    - cron: '0 0 * * 0'  # Exécution une fois par semaine
+  workflow_dispatch:     # Exécution manuelle
+
+jobs:
+  collect-readmes:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # Lister les repositories
+      - name: Lister les repositories
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+          
+          for repo_name in $repos; do
+            echo "Répertoire $repo_name"
+          done
