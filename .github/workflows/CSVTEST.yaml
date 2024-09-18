@@ -54,7 +54,6 @@ jobs:
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
 
           for repo_name in $repos; do
-            echo "Récupération de la date du dernier commit de $repo_name"
             last_commit_date=$(curl -s -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date')
             echo "Dernier commit de $repo_name : $last_commit_date"
