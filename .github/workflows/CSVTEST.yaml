@@ -94,11 +94,8 @@ jobs:
             languages=$(curl -s -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/JulienDroulez31/$repo_name/languages")
 
-            # Ajouter les informations du repo au fichier CSV
-            echo "$repo_name;Julien;Product2;$languages;$last_commit_date" >> results/results.csv
+            echo "$repo_name;Julien;Product2;$languages;$last_commit_date" > results/results.csv
           done
-
-          # Afficher le contenu du fichier CSV
           cat results/results.csv
 
       # Lister les fichiers CSV
