@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+
       # Lister les repos et récupérer les README.md
       - name: Collect README.md from repositories
         env:
@@ -28,9 +30,11 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
+
       # Lister les fichiers pour voir si les README.md ont été récupérés
       - name: Lister les fichiers README.md récupérés
         run: ls -l *.md
+
 
       # Affichage des fichiers README
       - name: Affichage des fichiers README
@@ -46,6 +50,7 @@ jobs:
             echo ""
           done
 
+
       # Récupérer la date du dernier commit
       - name: Récupérer la date du dernier commit
         env:
@@ -60,6 +65,7 @@ jobs:
             echo " "
           done
 
+
       # Créer un fichier CSV par repo avec des données dynamiques
       - name: Créer un fichier CSV par repo
         env:
@@ -68,24 +74,29 @@ jobs:
           # Créer le répertoire results s'il n'existe pas
           mkdir -p results
 
-          # Initialiser le fichier CSV avec un en-tête
+
+      # Initialiser le fichier CSV avec un en-tête
           echo "Repository;Owner;Produit;Languages;Dernier commit" > results/results.csv
 
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
           for repo_name in $repos; do
             last_commit_date=$(curl -s -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date')
-            
-            # Ajouter les informations du repo au fichier CSV
+
+
+      # Ajouter les informations du repo au fichier CSV
             echo "$repo_name;Julien;Product2; ;$last_commit_date" >> results/results.csv
           done
+
 
           # Afficher le contenu du fichier CSV
           cat results/results.csv
 
+
       # Lister les fichiers CSV
       - name: Lister le fichier CSV
         run: ls -l results/*.csv
+
 
       # Convertir CSV en tableau MD
       - name: Convertir un fichier CSV en tableau MD
@@ -97,6 +108,7 @@ jobs:
             for csv_file in results/*.csv; do
               csv2md $csv_file
             done
+
 
       # Upload artifacts
       - name: 'Upload Artifacts'
