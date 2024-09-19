@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Lister les repos et récupérer les README.md
+      # Lister les repos et récupérer les fichiers READMEs
       - name: Collect README.md from repositories
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
               | jq -r '.content' | base64 --decode > README-$repo_name.md
           done
 
-      # Lister les fichiers pour voir si les README.md ont été récupérés
+      # Lister les fichiers READMEs
       - name: Lister les fichiers README.md récupérés
         run: ls -l *.md
 
@@ -46,8 +46,8 @@ jobs:
             echo ""
           done
 
-      # Récupérer la date du dernier commit
-      - name: Récupérer la date du dernier commit
+      # Récupérer les dates des derniers commits
+      - name: Récupérer les dates des derniers commits
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -60,8 +60,8 @@ jobs:
             echo " "
           done
 
-      # Créer un fichier CSV par repo avec des données dynamiques
-      - name: Créer un fichier CSV par repo
+      # Créer un fichier CSV
+      - name: Créer un fichier CSV
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
