@@ -94,7 +94,7 @@ jobs:
             languages=$(curl -s -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/JulienDroulez31/$repo_name/languages")
 
-            echo "$repo_name;Julien;Product2;$languages;$last_commit_date" > results/results.csv
+            echo "$repo_name;Julien;Product2;$languages;$last_commit_date" >> results/results.csv
           done
           cat results/results.csv
 
