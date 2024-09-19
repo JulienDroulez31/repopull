@@ -69,7 +69,7 @@ jobs:
           mkdir -p results
 
           # Initialiser le fichier CSV avec un en-tête
-          echo "Repository;Owner;Produit;Dernier commit" > results/results.csv
+          echo "Repository;Owner;Produit;Languages;Dernier commit" > results/results.csv
 
           repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
           for repo_name in $repos; do
