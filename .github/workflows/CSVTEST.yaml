@@ -69,7 +69,7 @@ jobs:
 
           for repo_name in $repos; do
             languages=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/languages" | jq -r 'keys[]')
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/languages" | jq -r 'keys | join(", ")')
             echo "Langages de $repo_name : $languages"
             echo " "
           done
@@ -92,7 +92,7 @@ jobs:
             "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date')
             
             languages=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/languages" | jq -r 'keys[]')
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/languages" | jq -r 'keys | join(", ")')
 
             echo "$repo_name;Julien;Product2;$languages;$last_commit_date" >> results/results.csv
           done
