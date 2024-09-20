@@ -46,6 +46,14 @@ jobs:
       #       echo ""
       #     done
 
+      # Afficher les repos
+      - name: Récupérer les dates des derniers commits
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+          echo "$repos"
+
       # Récupérer les dates des derniers commits
       - name: Récupérer les dates des derniers commits
         env:
