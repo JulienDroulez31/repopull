@@ -75,7 +75,7 @@ jobs:
           done
 
       # Récupérer les topics
-      - name: Afficher les langages des repos
+      - name: Récupérer les topics
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         run: |
