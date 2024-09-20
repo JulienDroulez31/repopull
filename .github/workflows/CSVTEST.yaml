@@ -141,8 +141,8 @@ jobs:
           cat results/results.csv
 
       # Lister les fichiers CSV
-      - name: Lister le fichier CSV
-        run: ls -l results/*.csv
+      # - name: Lister le fichier CSV
+      #   run: ls -l results/*.csv
 
       # # Convertir CSV en tableau MD
       # - name: Convertir un fichier CSV en tableau MD
