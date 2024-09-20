@@ -46,8 +46,8 @@ jobs:
       #       echo ""
       #     done
 
-      # Afficher les repos
-      - name: Récupérer les dates des derniers commits
+      # Lister les repos
+      - name: Lister les repos
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
