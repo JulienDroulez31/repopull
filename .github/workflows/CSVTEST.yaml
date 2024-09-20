@@ -74,6 +74,20 @@ jobs:
             echo " "
           done
 
+      # Récupérer les topics
+      - name: Afficher les langages des repos
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+        run: |
+          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
+
+          for repo_name in $repos; do
+            owner=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("owner-")) | split("-")[1]')
+            echo "Owner de de $repo_name : $owner"
+            echo " "
+          done
+
 
       # Créer un fichier CSV
       - name: Créer un fichier CSV
@@ -94,7 +108,10 @@ jobs:
             languages=$(curl -s -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/JulienDroulez31/$repo_name/languages" | jq -r 'keys | join(", ")')
 
-            echo "$repo_name;Julien;Product2;$languages;$last_commit_date" >> results/results.csv
+            owner=$(curl -s -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("owner-")) | split("-")[1]')
+
+            echo "$repo_name;$owner;Product2;$languages;$last_commit_date" >> results/results.csv
           done
           cat results/results.csv
 
