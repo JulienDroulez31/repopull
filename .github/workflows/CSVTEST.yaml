@@ -144,16 +144,16 @@ jobs:
       - name: Lister le fichier CSV
         run: ls -l results/*.csv
 
-      # Convertir CSV en tableau MD
-      - name: Convertir un fichier CSV en tableau MD
-        env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-            pip install csv2md
+      # # Convertir CSV en tableau MD
+      # - name: Convertir un fichier CSV en tableau MD
+      #   env:
+      #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: |
+      #       pip install csv2md
 
-            for csv_file in results/*.csv; do
-              csv2md $csv_file
-            done
+      #       for csv_file in results/*.csv; do
+      #         csv2md $csv_file
+      #       done
 
       # Upload artifacts
       - name: 'Upload Artifacts'
