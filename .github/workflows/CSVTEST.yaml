@@ -46,8 +46,8 @@ jobs:
       #       echo ""
       #     done
 
-      # Lister les repos
-      - name: Lister les repos
+      # Récupérer les repos
+      - name: Récupérer les repos
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -68,8 +68,8 @@ jobs:
             echo " "
           done
 
-      # Afficher les langages des repos
-      - name: Afficher les langages des repos
+      # Récupérer le langage des repos
+      - name: Récupérer le langage des repos
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
         run: |
