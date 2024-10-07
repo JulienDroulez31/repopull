@@ -11,71 +11,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      # Récupérer les repos
+      # Récupérer les repos une seule fois
       - name: Récupérer les repos
+        id: repos
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-          echo "$repos"
+          gh repo list JulienDroulez31 -L 2000 --json name > repos.json
 
-      # Récupérer les dates des derniers commits
-      - name: Récupérer les dates des derniers commits
+      # Récupérer toutes les infos nécessaires en une seule étape
+      - name: Récupérer les infos des dépôts
+        id: repo_info
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-
+          repos=$(jq -r '.[].name' repos.json)
           for repo_name in $repos; do
             last_commit_date=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date')
-            echo "Dernier commit de $repo_name : $last_commit_date"
-            echo " "
-          done
-
-      # Récupérer le langage des repos
-      - name: Récupérer le langage des repos
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
-        run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-
-          for repo_name in $repos; do
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date // "No commit found"')
+            
             languages=$(curl -s -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/JulienDroulez31/$repo_name/languages" | jq -r 'keys | join(", ")')
-            echo "Langages de $repo_name : $languages"
-            echo " "
-          done
-
-      # Récupérer les owners
-      - name: Récupérer les owners
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
-        run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-
-          for repo_name in $repos; do
+            
             owner=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("owner-")) | split("-")[1]')
-            echo "Owner de de $repo_name : $owner"
-            echo " "
-          done
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("owner-")) | split("-")[1] // "No owner found"')
 
-      # Récupérer les products
-      - name: Récupérer les products
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
-        run: |
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-
-          for repo_name in $repos; do
             product=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("product-")) | split("-")[1]')
-            echo "Product de $repo_name : $product"
-            echo " "
-          done
+            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("product-")) | split("-")[1] // "No product found"')
 
+            echo "$repo_name;$owner;$product;$languages;$last_commit_date" >> results/results.csv
+          done
 
       # Créer un fichier CSV
       - name: Créer un fichier CSV
@@ -84,32 +49,22 @@ jobs:
         run: |
           # Créer le répertoire results s'il n'existe pas
           mkdir -p results
-
+          
           # Initialiser le fichier CSV avec un en-tête
           echo "Repository;Owner;Produit;Languages;Dernier commit" > results/results.csv
-
-          repos=$(gh repo list JulienDroulez31 -L 2000 --json name --jq '.[].name')
-          for repo_name in $repos; do
-            last_commit_date=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/commits/main" | jq -r '.commit.committer.date')
-            
-            languages=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/languages" | jq -r 'keys | join(", ")')
-
-            owner=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("owner-")) | split("-")[1]')
-
-            product=$(curl -s -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/JulienDroulez31/$repo_name/topics" | jq -r '.names[] | select(startswith("product-")) | split("-")[1]')
-
-            echo "$repo_name;$owner;$product;$languages;$last_commit_date" >> results/results.csv
-          done
+          
+          # Ajouter les infos des dépôts au fichier CSV
           cat results/results.csv
 
-      # Upload artifacts
+      # Compresser les fichiers CSV
+      - name: Compresser les résultats
+        run: |
+          zip -r results.zip results/
+
+      # Upload artifacts compressés
       - name: 'Upload Artifacts'
         uses: actions/upload-artifact@v4
         with:
           name: Results
-          path: results
+          path: results.zip
           retention-days: 90
